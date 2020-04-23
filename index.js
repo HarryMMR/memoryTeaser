@@ -5,6 +5,7 @@ var userSeq = [];
 var isStarted = false;
 var nextLevelTimer;
 var userClicks = -1;
+var sound = new Audio();
 
 $("h1").on("click", function() {
   if (!isStarted) {
@@ -57,11 +58,13 @@ $(".btn").click(function(event) {
 function pressAndSound(e) {
   var classList = e.classList;
   classList.add("pressed");
-  playSound(e.id);
+  var id = e.id;
+  // playSound(e.id);
   setTimeout(function() {
     classList.remove("pressed");
   }, 100);
 
+  // $("#" + id).fadeOut().fadeIn();
 }
 
 function checkSeq() {
@@ -121,8 +124,6 @@ function generateRandom() {
   var randInt = Math.floor(rand * 4);
   return randInt;
 }
-
-var sound = new Audio();
 
 function playSound(event) {
   var file;
