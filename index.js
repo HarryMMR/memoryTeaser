@@ -2,13 +2,31 @@ var tiles = ["red", "green", "yellow", "blue"];
 var level = 1;
 var seq = [];
 var userSeq = [];
+var isStarted = false;
+var nextLevelTimer;
+var userClicks = -1;
+
+$("h1").on("click", function() {
+  if (!isStarted) {
+    start();
+  }
+})
+
+$("h1").on("tap", function() {
+  if (!isStarted) {
+    start();
+  }
+})
 
 $("body").on("keydown", function() {
-  changeTitle(level);
-  start();
+  if (!isStarted) {
+    start();
+  }
 })
 
 function start() {
+  isStarted = true;
+  changeTitle(level);
   var rand = generateRandom();
   var colorTile = tiles[rand]
   var colorTileClass = "." + colorTile;
@@ -18,19 +36,22 @@ function start() {
   $(colorTileClass).addClass("pressed");
   setTimeout(function() {
     $(colorTileClass).removeClass("pressed");
-  }, 100);
+  }, 300);
 
   playSound(colorTile);
   // pressAndSound(obj);
   seq.push(colorTile);
+
 }
 
 $(".btn").click(function(event) {
-  // console.log(this.id);
-  pressAndSound(this);
+  if (isStarted) {
+    pressAndSound(this);
 
-  userSeq.push(this.id);
-  checkSeq();
+    userSeq.push(this.id);
+    userClicks++;
+    checkSeq();
+  }
 })
 
 function pressAndSound(e) {
@@ -44,14 +65,17 @@ function pressAndSound(e) {
 }
 
 function checkSeq() {
-  var timer;
-  if (userSeq.length < seq.length) {
+  if (!isStarted) return;
+
+
+  if ((userSeq.length < seq.length) && (userSeq[userClicks] == seq[userClicks])) {
+    console.log(userSeq[level] == seq[level]);
 
   } else {
-    clearTimeout(timer);
+    clearTimeout(nextLevelTimer);
     if (userSeq.toString() === seq.toString()) {
 
-      timer = setTimeout(goNextLevel, 1100);
+      nextLevelTimer = setTimeout(goNextLevel, 1100);
 
     } else {
 
@@ -61,29 +85,32 @@ function checkSeq() {
 }
 
 function restart() {
+  playSound("wrong");
+  clearTimeout(nextLevelTimer);
   seq = [];
   userSeq = [];
   changeTitle("-1");
   level = 1;
   $("body").addClass("game-over");
 
-  setTimeout(function () {
+  setTimeout(function() {
     $("body").removeClass("game-over");
   }, 200);
+
+  isStarted = false;
 }
 
 function goNextLevel() {
+  userClicks = -1;
   userSeq = [];
   level++;
   changeTitle(level);
   start();
-  // var rand = generateRandom();
-  // seq.push(tiles[rand]);
 }
 
 function changeTitle(str) {
   if (str == '-1') {
-    $("h1").text("Game over. Press any key to restart!");
+    $("h1").text("Game over. Click here to restart!");
     return;
   }
   $("h1").text("Level " + str);
@@ -101,6 +128,9 @@ function playSound(event) {
   var file;
 
   switch (event) {
+    case "wrong":
+      file = "sounds/wrong.mp3";
+      break;
     case "red":
       file = "sounds/red.mp3";
       break;
