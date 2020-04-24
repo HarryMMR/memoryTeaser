@@ -59,7 +59,7 @@ function pressAndSound(e) {
   var classList = e.classList;
   classList.add("pressed");
   var id = e.id;
-  // playSound(e.id);
+  playSound(e.id);
   setTimeout(function() {
     classList.remove("pressed");
   }, 100);
