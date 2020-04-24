@@ -6,21 +6,25 @@ var isStarted = false;
 var nextLevelTimer;
 var userClicks = -1;
 var sound = new Audio();
+var timeTaken;
 
 $("h1").on("click", function() {
   if (!isStarted) {
+    timeTaken = Date.now();
     start();
   }
 })
 
 $("h1").on("tap", function() {
   if (!isStarted) {
+    timeTaken = Date.now();
     start();
   }
 })
 
 $("body").on("keydown", function() {
   if (!isStarted) {
+    timeTaken = Date.now();
     start();
   }
 })
@@ -113,7 +117,8 @@ function goNextLevel() {
 
 function changeTitle(str) {
   if (str == '-1') {
-    $("h1").text("Game over at level " + level + ". Click here to restart!");
+    var time = Math.round((Date.now() - timeTaken)/1000);
+    $("h1").text("Game over at level " + level + ". Time taken: " + time + " seconds. Click here to restart!");
     return;
   }
   $("h1").text("Level " + str);
