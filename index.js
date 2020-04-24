@@ -113,7 +113,7 @@ function goNextLevel() {
 
 function changeTitle(str) {
   if (str == '-1') {
-    $("h1").text("Game over. Click here to restart!");
+    $("h1").text("Game over at level " + level + ". Click here to restart!");
     return;
   }
   $("h1").text("Level " + str);
